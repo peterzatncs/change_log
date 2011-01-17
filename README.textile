@@ -10,18 +10,16 @@ h2. Install Change Log Gem
 
 2. bundler
 <pre><code>
-    # Gemfile in your application
-    gem 'change_log','0.0.1'
+# Gemfile in your application
+gem 'change_log','0.0.1'
 </code></pre>
 
 Then:
-<pre><code>
-    bundle install
-</code></pre>
+<pre><code>bundle install</code></pre>
 
 h2. Create a table to keep all maintenance logs
 
-    1. generate a migration file
+    Generate a migration file
 
 <pre><code>
     class AddChangeLog < ActiveRecord::Migration
@@ -52,12 +50,12 @@ Then:
 h2. Use Change Log
 
     1. Add current_user method in application_controller.rb 
-    <pre><code>
-      # used by change log 
-      def current_user # :nodoc:
-        return session[:user] # replace this with your own code to tell change_log who is the current user
-      end
-    </code></pre>
+<pre><code>
+# used by change log 
+def current_user # :nodoc:
+  return session[:user] # replace this with your own code to tell change_log who is the current user
+end
+</code></pre>
 
 h2. Testing
 
