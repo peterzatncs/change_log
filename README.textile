@@ -5,10 +5,10 @@ A gem to keep all maintenances in database
 
 h2. Install Change Log Gem
 
-1. command:
+1. by command:
 <pre><code># gem install change_log</code></pre>
 
-2. bundler
+2. or by bundler
 <pre><code># Gemfile in your application
 gem 'change_log','0.0.1'
 </code></pre>
@@ -23,10 +23,10 @@ h2. Create a table to keep all maintenance logs
 <pre><code>
     class AddChangeLog < ActiveRecord::Migration
       def self.up
-        create_table :change_log do |t|
+        create_table :change_logs do |t|
          t.integer :version, :null=>false # store version of each change
          t.string :record_id,:limit=>30   # store the actual record id 
-         t.string :table_name, :limti=>60  # store the table name 
+         t.string :table_name, :limit=>60  # store the table name 
          t.string :attribute_name,:limit=>60 # store the column name
          t.string :user, :limit=>20  # store the user who made the change
          t.string :action, :limit=>6 # store the change action: create, read, update, delete
@@ -38,7 +38,7 @@ h2. Create a table to keep all maintenance logs
       end
 
       def self.down
-        drop_table :change_log
+        drop_table :change_logs
       end
     end
 </code></pre>
@@ -48,13 +48,25 @@ Then:
 
 h2. Use Change Log
 
-    1. Add current_user method in application_controller.rb 
+    1. Include change_log in environment.rb
+<pre><code>require 'change_log'</code></pre>
+
+    2. Add current_user method in application_controller.rb 
 <pre><code>
 # used by change log 
-def current_user # :nodoc:
+def current_user 
   return session[:user] # replace this with your own code to tell change_log who is the current user
 end
 </code></pre>
+
+    3. In model file
+<pre><code>
+enable_change_log :ignore=>[:updated_at]    
+</code></pre>
+
+Put any columns you do not want to keep in the change log table in :ignore option.
+eg. the password hash
+
 
 h2. Testing
 
