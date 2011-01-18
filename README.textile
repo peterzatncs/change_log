@@ -10,7 +10,7 @@ h2. Install Change Log Gem
 
 2. or by bundler
 <pre><code># Gemfile in your application
-gem 'change_log','0.0.1'
+gem 'change_log'
 </code></pre>
 
 Then:
