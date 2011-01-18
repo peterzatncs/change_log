@@ -1,6 +1,6 @@
 class Maintenance < ActiveRecord::Base
-  # Set table name to "change_logs"
-  set_table_name 'change_logs'
+  # Set table name to "change_logs" 
+  set_table_name 'change_logs' 
 
   private
 
@@ -12,7 +12,7 @@ class Maintenance < ActiveRecord::Base
     record.save
   end
 
-  # return the lastest version number for this change
+  # return the latest version number for this change
   def self.get_version_number(id,table_name)
     latest_version = Maintenance.maximum(:version,:conditions=>['record_id = ? and table_name = ?',id,table_name])
     return latest_version.nil? ? 1 : latest_version.next

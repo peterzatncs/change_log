@@ -7,14 +7,21 @@ h2. Install Change Log Gem
 
 1. by command:
 <pre><code># gem install change_log</code></pre>
+   Then in your environment.rb:
+<pre><code>config.gem 'change_log'</code></pre>
 
-2. or by bundler
+
+2. by bundler:
 <pre><code># Gemfile in your application
 gem 'change_log'
 </code></pre>
 
 Then:
 <pre><code>bundle install</code></pre>
+
+* Note: Currently if you use bundler to load gems and phusion-passenger as your web server,
+        you may get "enable_change_log" method missing error. 
+        I am still looking for reason for that, helps will be pleased!
 
 h2. Create a table to keep all maintenance logs
 
@@ -46,10 +53,20 @@ h2. Create a table to keep all maintenance logs
 Then:
 <pre><code>rake db:migrate</code></pre>
 
+* Note: It is ok if you want to use other table name instead of 'change_logs',
+        choose your preferred table name and run the migration.
+        Just remember in your environment.rb file, you need to tell change_log gem 
+        what is your table name:
+<pre><code># config/environment.rb
+Maintenance.set_table_name('hr_maintenances')
+</code></pre>
+
+* Note: Maintenance model is core ActiveRecord model used by change_log.
+
 h2. Use Change Log
 
     1. Include change_log in environment.rb
-<pre><code>require 'change_log'</code></pre>
+<pre><code>config.gem 'change_log'</code></pre>
 
     2. Add current_user method in application_controller.rb 
 <pre><code>
