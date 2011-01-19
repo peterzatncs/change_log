@@ -14,7 +14,7 @@ h2. Install Change Log Gem
 <pre><code>config.gem 'change_log'</code></pre>
 
 
-2. by bundler:
+2. or by bundler:
 <pre><code># Gemfile in your application
 gem 'change_log'
 </code></pre>
@@ -22,10 +22,11 @@ gem 'change_log'
 Then:
 <pre><code>bundle install</code></pre>
 
-* Note: If you use bundler with Rails 2.3.x, you may get "enable_change_log" method missing error. 
+* Note: 
+        If you use bundler with Rails 2.3.x, you may get "enable_change_log" method missing error. 
         This is because Rails 2.3.x comes with its own gem handling. 
         You need to override that and replace it with support for Bundler. 
-        Visit http://gembundler.com/rails23.html to find out how.
+        Visit "Bundler Website":http://gembundler.com/rails23.html to find out how.
 
 h2. Create a table to keep all changes
 
@@ -59,10 +60,7 @@ Then:
 
 h2. Use Change Log
 
-    1. Include change_log in environment.rb (if you are not using bundler)
-<pre><code>config.gem 'change_log'</code></pre>
-
-    2. Add current_user method in application_controller.rb 
+    1. *Add current_user Method in application_controller.rb*
 
 This method will tell change_log who is the current user
 <pre><code>
@@ -71,7 +69,7 @@ def current_user
 end
 </code></pre>
 
-    3. ActiveRecord Models
+    2. *ActiveRecord Models*
 If you want to enable change_log for any ActiveRecord Model, 
 just put following line in very beginning of model file.
 <pre><code>
@@ -82,7 +80,7 @@ Put any columns you do not want to keep in the change log table in :ignore optio
 eg. the password hash
 
 
-    4.  About the ChangeLogs model
+    3.  *About the ChangeLogs Model*
 ChangeLogs model is core ActiveRecord model used by change_log gem.
 
 You can use it directly in your model, controller even in helper.
@@ -98,10 +96,12 @@ ChangeLogs.find(:all,:conditions=>['user = ?', 'peterz'])
 ChangeLogs.find(:all,:conditions=>['table_name = ?', 'accounts'])
 </code></pre>   
 
-* Note: It is ok if you want to use other table name instead of 'change_logs',
+* Note: 
+        It is ok if you want to use other table name instead of 'change_logs',
         choose your preferred table name and run the migration.
         Just remember in your environment.rb file, you need to tell change_log gem 
         what is your table name:
+
 <pre><code># config/environment.rb
 ChangeLogs.set_table_name('hr_maintenances')
 </code></pre>
