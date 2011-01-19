@@ -3,7 +3,7 @@ require 'yaml'
 require 'change_log/config'
 require 'change_log/controller'
 require 'change_log/has_change_log'
-require 'change_log/maintenance'
+require 'change_log/change_logs'
 
 # ChangeLog's module methods can be called in both models and controllers.
 module ChangeLog
@@ -19,7 +19,7 @@ module ChangeLog
     !!ChangeLog.config.enabled
   end
 
-  # Returns who is reponsible for any changes that occur.
+  # Returns who is responsible for any changes that occur.
   def self.whodidit
     change_log_store[:whodidit]
   end

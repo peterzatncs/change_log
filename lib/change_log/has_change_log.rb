@@ -44,11 +44,11 @@ module ChangeLog
       def record_create
         # do nothing if the change log is not turned on
         return '' unless switched_on?
-        # saving changes to maintenance log
+        # saving changes to change log
         self.attributes.map do |key,value|
           unless self.ignore.include?(key.to_sym)
             option = {:action=>'INSERT', :record_id=>self.id,:table_name=>self.class.table_name, :user=>ChangeLog.whodidit,:attribute_name=>key,:new_value=>value,:version=>1}
-            Maintenance.update_maintenance_record_with(option)
+            ChangeLogs.update_change_log_record_with(option)
           end
         end  
   	  end
@@ -61,27 +61,27 @@ module ChangeLog
           # do not record changes between nil <=> ''
           # and ignore the changes for ignored columns
           unless value[1].eql?(value[0]) || (value[1].blank?&&value[0].blank?) || self.ignore.include?(attribute_name.to_s)
-            option = {:action=>'UPDATE',:record_id=>self.id,:table_name=>self.class.table_name,:user=>ChangeLog.whodidit,:attribute_name=>attribute_name,:old_value=>value[0],:new_value=>value[1],:version => Maintenance.get_version_number(self.id,self.class.table_name)}
-            Maintenance.update_maintenance_record_with(option)
+            option = {:action=>'UPDATE',:record_id=>self.id,:table_name=>self.class.table_name,:user=>ChangeLog.whodidit,:attribute_name=>attribute_name,:old_value=>value[0],:new_value=>value[1],:version => ChangeLogs.get_version_number(self.id,self.class.table_name)}
+            ChangeLogs.update_change_log_record_with(option)
           end
         end
       end
 
       def record_destroy
         return '' unless switched_on?
-        Maintenance.update_maintenance_record_with({:action=>'DELETE',:table_name=>self.class.table_name,:record_id=>self.id,:user=>ChangeLog.whodidit,:version => Maintenance.get_version_number(self.id,self.class.table_name)})
+        ChangeLogs.update_change_log_record_with({:action=>'DELETE',:table_name=>self.class.table_name,:record_id=>self.id,:user=>ChangeLog.whodidit,:version => ChangeLogs.get_version_number(self.id,self.class.table_name)})
       end
 
-      # Return a list of maintenance records
+      # Return a list of change_log records
       # Return empty array if not record found
       def change_logs
-        return Maintenance.find(:all,:conditions=>['table_name= ? and record_id = ?',self.class.table_name,self.id],:order=>"created_at DESC")
+        return ChangeLogs.find(:all,:conditions=>['table_name= ? and record_id = ?',self.class.table_name,self.id],:order=>"created_at DESC")
       end
 
-      # Return `true` if current record has a list of maintenance records
+      # Return `true` if current record has a list of change_log records
       # otherwise `false`.
       def has_change_log?
-        return (Maintenance.count(:conditions=>['table_name= ? and record_id = ?',self.class.table_name,self.id]) > 0) ? true : false
+        return (ChangeLogs.count(:conditions=>['table_name= ? and record_id = ?',self.class.table_name,self.id]) > 0) ? true : false
       end
 
       private

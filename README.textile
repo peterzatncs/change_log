@@ -1,6 +1,9 @@
 h1. Change Log
 
-A gem to keep all maintenances in database
+A gem to keep all changes about the record in database.
+It automatically saves who made the changes at what time and what has been changed into a single database table.
+You can choose the columns which you want to keep the changes.
+Ignores columns like 'updated_at', 'created_at' and 'password' etc.
 
 
 h2. Install Change Log Gem
@@ -19,11 +22,12 @@ gem 'change_log'
 Then:
 <pre><code>bundle install</code></pre>
 
-* Note: Currently if you use bundler to load gems and phusion-passenger as your web server,
-        you may get "enable_change_log" method missing error. 
-        I am still looking for reason for that, helps will be pleased!
+* Note: If you use bundler with Rails 2.3.x, you may get "enable_change_log" method missing error. 
+        This is because Rails 2.3.x comes with its own gem handling. 
+        You need to override that and replace it with support for Bundler. 
+        Visit http://gembundler.com/rails23.html to find out how.
 
-h2. Create a table to keep all maintenance logs
+h2. Create a table to keep all changes
 
     Generate a migration file
 
@@ -51,32 +55,25 @@ h2. Create a table to keep all maintenance logs
 </code></pre>
 
 Then:
-<pre><code>rake db:migrate</code></pre>
-
-* Note: It is ok if you want to use other table name instead of 'change_logs',
-        choose your preferred table name and run the migration.
-        Just remember in your environment.rb file, you need to tell change_log gem 
-        what is your table name:
-<pre><code># config/environment.rb
-Maintenance.set_table_name('hr_maintenances')
-</code></pre>
-
-* Note: Maintenance model is core ActiveRecord model used by change_log.
+<pre><code>rake db:migrate</code></pre> 
 
 h2. Use Change Log
 
-    1. Include change_log in environment.rb
+    1. Include change_log in environment.rb (if you are not using bundler)
 <pre><code>config.gem 'change_log'</code></pre>
 
     2. Add current_user method in application_controller.rb 
+
+This method will tell change_log who is the current user
 <pre><code>
-# used by change log 
 def current_user 
-  return session[:user] # replace this with your own code to tell change_log who is the current user
+  return session[:user] # replace this with your own code
 end
 </code></pre>
 
-    3. Models
+    3. ActiveRecord Models
+If you want to enable change_log for any ActiveRecord Model, 
+just put following line in very beginning of model file.
 <pre><code>
 enable_change_log :ignore=>[:updated_at]    
 </code></pre>
@@ -84,6 +81,30 @@ enable_change_log :ignore=>[:updated_at]
 Put any columns you do not want to keep in the change log table in :ignore option.
 eg. the password hash
 
+
+    4.  About the ChangeLogs model
+ChangeLogs model is core ActiveRecord model used by change_log gem.
+
+You can use it directly in your model, controller even in helper.
+
+For example:
+<pre><code># List all changes
+ChangeLogs.find(:all)
+
+# List all changes made by user 'peterz'
+ChangeLogs.find(:all,:conditions=>['user = ?', 'peterz'])
+
+# List all changes for table 'accounts'
+ChangeLogs.find(:all,:conditions=>['table_name = ?', 'accounts'])
+</code></pre>   
+
+* Note: It is ok if you want to use other table name instead of 'change_logs',
+        choose your preferred table name and run the migration.
+        Just remember in your environment.rb file, you need to tell change_log gem 
+        what is your table name:
+<pre><code># config/environment.rb
+ChangeLogs.set_table_name('hr_maintenances')
+</code></pre>
 
 h2. Testing
 
