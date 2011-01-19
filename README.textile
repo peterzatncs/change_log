@@ -87,14 +87,13 @@ You can use it directly in your model, controller even in helper.
 
 For example:
 <pre><code># List all changes
-ChangeLogs.find(:all)
+ChangeLogs.find(:all)</code></pre>
 
-# List all changes made by user 'peterz'
-ChangeLogs.find(:all,:conditions=>['user = ?', 'peterz'])
+<pre><code># List all changes made by user 'peterz'
+ChangeLogs.find(:all,:conditions=>['user = ?', 'peterz'])</code></pre>
 
-# List all changes for table 'accounts'
-ChangeLogs.find(:all,:conditions=>['table_name = ?', 'accounts'])
-</code></pre>   
+<pre><code># List all changes for table 'accounts'
+ChangeLogs.find(:all,:conditions=>['table_name = ?', 'accounts'])</code></pre>   
 
 * Note: 
         It is ok if you want to use other table name instead of 'change_logs',
