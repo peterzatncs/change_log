@@ -1,9 +1,9 @@
 h1. Change Log
 
-A gem to keep all changes about the record in database.
-It automatically saves who made the changes at what time and what has been changed into a single database table.
-You can choose the columns which you want to keep the changes.
-Ignores columns like 'updated_at', 'created_at' and 'password' etc.
+A gem to keep all changes about the data in database.
+It automatically saves who made the changes at what time and what has been changed.
+You can choose to skip the column which you do not want to keep change logs.
+For example: 'updated_at', 'created_at' and 'password' etc.
 
 
 h2. Install Change Log Gem
@@ -28,14 +28,14 @@ Then:
         You need to override that and replace it with support for Bundler. 
         Visit "Bundler Website":http://gembundler.com/rails23.html to find out how.
 
-h2. Create a table to keep all changes
+3. Create a table to keep all changes
 
-    Generate a migration file
+    Generate a migration file similar to this:
 
 <pre><code>
     class AddChangeLog < ActiveRecord::Migration
       def self.up
-        create_table :change_logs do |t|
+        create_table :change_logs do |t|       # feel free to choose another table name
          t.integer :version, :null=>false      # store version of each change
          t.string :record_id,:limit=>30        # store the actual record id 
          t.string :table_name, :limit=>60      # store the table name 
@@ -58,7 +58,7 @@ h2. Create a table to keep all changes
 Then:
 <pre><code>rake db:migrate</code></pre> 
 
-h2. Use Change Log
+h2. Use Change Log Gem
 
     1. *Add current_user Method in application_controller.rb*
 
@@ -70,7 +70,7 @@ end
 </code></pre>
 
     2. *ActiveRecord Models*
-If you want to enable change_log for any ActiveRecord Model, 
+Enable change_log for Active Record Model, 
 just put following line in very beginning of model file.
 <pre><code>
 enable_change_log :ignore=>[:updated_at]    
@@ -79,6 +79,27 @@ enable_change_log :ignore=>[:updated_at]
 Put any columns you do not want to keep in the change log table in :ignore option.
 eg. the password hash
 
+Then the system should record every changes the user made to change_log table.
+If you are making changes within Model file:
+    For Example: 
+<pre><code># this is a model file
+def making_some_changes
+  user = User.find(:first)
+  user.email = 'peterz@ncs.co.nz'
+  user.save
+end
+</code></pre>
+
+An attribute called 'whodidit' is automatically available.
+So if you want to keep the changes in this scenario, do following:
+<pre><code># this is a model file
+def making_some_changes
+  user = User.find(:first)
+  user.email = 'peterz@ncs.co.nz'
+  user.whodidit = 'Peter'
+  user.save
+end
+</code></pre>
 
     3.  *About the ChangeLogs Model*
 ChangeLogs model is core ActiveRecord model used by change_log gem.
@@ -105,9 +126,8 @@ ChangeLogs.find(:all,:conditions=>['table_name = ?', 'accounts'])</code></pre>
 ChangeLogs.set_table_name('hr_maintenances')
 </code></pre>
 
-h2. Testing
-
-    TODO
+h2. Wish List
+    Please email me if you have any enquiry.
 
 
 h3. Author
@@ -116,4 +136,4 @@ h3. Author
 Peter Zhang at NCS New Zealand.
 Email: peterz@ncs.co.nz
 
-Copyright (c) 2011 Peter Zhang, released under the MIT license
+Copyright (c) 2011 Peter Zhang and NCS LTD, released under the MIT license

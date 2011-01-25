@@ -9,10 +9,9 @@ Gem::Specification.new do |s|
   s.authors     = ["Peter Zhang"]
   s.email       = ["peterz@ncs.co.nz"]
   s.homepage    = "http://www.ncs.co.nz"
-  s.summary     = %q{Change log gem record every changes for the model}
-  s.description = %q{A gem for tracking who did what changes and when it happened -- keeps all the maintenance logs}
+  s.summary     = %q{Change log gem records every changes for the active record model}
+  s.description = %q{A gem for tracking who did what and when it happened -- keeps all the changes done by user into a maintenance log}
 
-  s.add_development_dependency "rspec"
   s.rubyforge_project = "change_log"
 
   s.files         = `git ls-files`.split("\n")

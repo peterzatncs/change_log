@@ -1,0 +1,24 @@
+log_1:
+  id: 1
+  version: 1
+  record_id: 1
+  table_name: test
+  field_type: int
+  action: 'INSERT'
+  attribute_name: total
+  user: tester
+  old_value: 10
+  new_value: 100
+log_2:
+  id: 2
+  version: 2
+  record_id: 1
+  table_name: test
+  field_type: int
+  action: 'INSERT'
+  attribute_name: total
+  user: tester
+  old_value: 100
+  new_value: 1
+
+
