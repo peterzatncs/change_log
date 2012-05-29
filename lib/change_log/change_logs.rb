@@ -1,6 +1,8 @@
 class ChangeLogs < ActiveRecord::Base
   # Set table name to "change_logs" 
-  set_table_name 'change_logs' 
+  def table_name
+    :change_logs
+ 	end
 
   private
 
