@@ -126,6 +126,12 @@ ChangeLogs.find(:all,:conditions=>['table_name = ?', 'accounts'])</code></pre>
 ChangeLogs.set_table_name('hr_maintenances')
 </code></pre>
 
+    4. *Turn ChangeLogs off in testing environment*
+You can globally turn it off for your testing.
+<pre><code># config/environment.rb
+ChangeLog.enabled = false if RAILS_ENV == 'test'
+</code></pre>
+
 h2. Wish List
     Please email me if you have any enquiry.
 
