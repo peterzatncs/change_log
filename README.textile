@@ -116,21 +116,40 @@ ChangeLogs.find(:all,:conditions=>['user = ?', 'peterz'])</code></pre>
 <pre><code># List all changes for table 'accounts'
 ChangeLogs.find(:all,:conditions=>['table_name = ?', 'accounts'])</code></pre>   
 
-* Note: 
-        It is ok if you want to use other table name instead of 'change_logs',
-        choose your preferred table name and run the migration.
-        Just remember in your environment.rb file, you need to tell change_log gem 
-        what is your table name:
-
-<pre><code># config/environment.rb
-ChangeLogs.set_table_name('hr_maintenances')
-</code></pre>
-
     4. *Turn ChangeLogs off in testing environment*
 You can globally turn it off for your testing.
 <pre><code># config/environment.rb
 ChangeLog.enabled = false if RAILS_ENV == 'test'
 </code></pre>
+
+    5. *Database and table name
+'change_log' can save changes into separate database from the main application. It could be MySQL, SQLite or any other
+database that active record is happy to connect with.
+
+Here is an example of database.yml when using separate database for 'change_logs':
+<pre><code>change_logs:
+  adapter: mysql2
+  encoding: utf8
+  database: change_logs
+  username: username
+  password: ********
+  host: hostname
+  port: 3306
+</code></pre>
+
+And also you need to tell 'change_logs' to establish the connection.
+<pre><code># config/environment.rb
+ChangeLogs.establish_connection(:change_logs)
+</code></pre>
+
+Table name is also configurable. Instead of 'change_logs', choose your preferred table name and run the migration.
+Just remember in your environment.rb file, you need to tell change_log gem 
+what is your table name:
+
+<pre><code># config/environment.rb
+ChangeLogs.set_table_name('hr_maintenances')
+</code></pre>
+
 
 h2. Wish List
     Please email me if you have any enquiry.
