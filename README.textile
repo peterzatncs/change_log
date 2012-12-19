@@ -122,9 +122,9 @@ You can globally turn it off for your testing.
 ChangeLog.enabled = false if RAILS_ENV == 'test'
 </code></pre>
 
-    5. *Database and table name
-'change_log' can save changes into separate database from the main application. It could be MySQL, SQLite or any other
-database that active record is happy to connect with.
+    5. *Database and table name*
+change_log gem can save changes into separate database from the main application. 
+The database could be MySQL, SQLite or any other database that active record is happy to connect with.
 
 Here is an example of database.yml when using separate database for 'change_logs':
 <pre><code>change_logs:
@@ -137,7 +137,7 @@ Here is an example of database.yml when using separate database for 'change_logs
   port: 3306
 </code></pre>
 
-And also you need to tell 'change_logs' to establish the connection.
+And also you need to tell change_log gem to establish the connection.
 <pre><code># config/environment.rb
 ChangeLogs.establish_connection(:change_logs)
 </code></pre>
