@@ -41,30 +41,53 @@ module ChangeLog
     # Wrap the following methods in a module so we can include them only in the
     # ActiveRecord models that declare `enable_change_log`.
     module InstanceMethods
+
+      # NOTE::This version's change_log is temporarily locked down to Rails 2.3.x
+      # and mysql database. Another version with fully support to Rails 3.x and multiple databases 
+      # will be available soon in another branch on github.
       def record_create
         # do nothing if the change log is not turned on
         return '' unless switched_on?
+
+        # generate the single sql insert statement
+        column_values = []
         # saving changes to change log
         self.attributes.map do |key,value|
           unless self.ignore.include?(key.to_sym)
-            option = {:action=>'INSERT', :record_id=>self.id,:table_name=>self.class.table_name, :user=>ChangeLog.whodidit,:attribute_name=>key,:new_value=>value,:version=>1}
-            ChangeLogs.update_change_log_record_with(option)
+            field_type = ChangeLogs.get_field_type(self.class.table_name,key)
+            value = value.gsub("'", %q(\\\')) unless value.blank?
+            column_values << '(' + ["'INSERT'", self.id, "'#{self.class.table_name}'", "'#{ChangeLog.whodidit}'", "'#{field_type}'", "'#{key}'", "'#{value}'",1].join(',') + ')'
           end
         end  
+        column_names = ['action','record_id','table_name','user','field_type','attribute_name','new_value','version']
+        insert_statement = "INSERT INTO `#{ChangeLogs.table_name}` (`#{column_names.join('`, `')}`) VALUES " + column_values.join( ',' ) + ";"
+        ActiveRecord::Base.connection.execute( insert_statement )
   	  end
 
+      # NOTE::This version's change_log is temporarily locked down to Rails 2.3.x
+      # and mysql database. Another version with fully support to Rails 3.x and multiple databases 
+      # will be available soon in another branch on github.
       def record_update
         # do nothing if the change log is not turned on and no changes has been made
         return '' unless switched_on? && self.valid? && self.changed?
 
+        # generate the single sql insert statement
+        column_values = []
+        # saving changes to change log
         self.changes.each do |attribute_name,value|
           # do not record changes between nil <=> ''
           # and ignore the changes for ignored columns
           unless value[1].eql?(value[0]) || (value[1].blank?&&value[0].blank?) || self.ignore.include?(attribute_name.to_s)
-            option = {:action=>'UPDATE',:record_id=>self.id,:table_name=>self.class.table_name,:user=>ChangeLog.whodidit,:attribute_name=>attribute_name,:old_value=>value[0],:new_value=>value[1],:version => ChangeLogs.get_version_number(self.id,self.class.table_name)}
-            ChangeLogs.update_change_log_record_with(option)
+            field_type = ChangeLogs.get_field_type(self.class.table_name,attribute_name)
+            value[0] = value[0].gsub("'", %q(\\\')) unless value[0].blank?
+            value[1] = value[1].gsub("'", %q(\\\')) unless value[1].blank?
+
+            column_values << '(' + ["'UPDATE'", self.id, "'#{self.class.table_name}'", "'#{ChangeLog.whodidit}'","'#{field_type}'", "'#{attribute_name}'", "'#{value[0]}'","'#{value[1]}'",ChangeLogs.get_version_number(self.id,self.class.table_name)].join(',') + ')'
           end
-        end
+        end  
+        column_names = ['action','record_id','table_name','user','field_type','attribute_name','old_value','new_value','version']
+        insert_statement = "INSERT INTO `#{ChangeLogs.table_name}` (`#{column_names.join('`, `')}`) VALUES " + column_values.join( ',' ) + ";"
+        ActiveRecord::Base.connection.execute( insert_statement )
       end
 
       def record_destroy
