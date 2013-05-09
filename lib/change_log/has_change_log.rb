@@ -56,12 +56,19 @@ module ChangeLog
           unless self.ignore.include?(key.to_sym)
             field_type = ChangeLogs.get_field_type(self.class.table_name,key)
             value = value.gsub("'", %q(\\\')) unless value.blank? || !value.is_a?(String)
-            column_values << '(' + ["'INSERT'", self.id, "'#{self.class.table_name}'", "'#{ChangeLog.whodidit}'", "'#{field_type}'", "'#{key}'", "'#{value}'",1].join(',') + ')'
+            user = ChangeLog.whodidit
+            if user.blank?
+              user = 'Unkown'
+            else
+              user = ChangeLog.whodidit.is_a?(String) ? ChangeLog.whodidit : ChangeLog.whodidit.id
+            end
+            time = Time.now.strftime("%Y-%m-%d %T")
+            column_values << '(' + ["'INSERT'", self.id, "'#{self.class.table_name}'", "'#{user}'", "'#{field_type}'", "'#{key}'", "'#{value}'",1, "'#{time}'" ].join(',') + ')'
           end
         end  
-        column_names = ['action','record_id','table_name','user','field_type','attribute_name','new_value','version']
+        column_names = ['action','record_id','table_name','user','field_type','attribute_name','new_value','version','created_at']
         insert_statement = "INSERT INTO `#{ChangeLogs.table_name}` (`#{column_names.join('`, `')}`) VALUES " + column_values.join( ',' ) + ";"
-        ActiveRecord::Base.connection.execute( insert_statement )
+        ChangeLogs.connection.execute( insert_statement )
   	  end
 
       # NOTE::This version's change_log is temporarily locked down to Rails 2.3.x
@@ -81,13 +88,19 @@ module ChangeLog
             field_type = ChangeLogs.get_field_type(self.class.table_name,attribute_name)
             value[0] = value[0].gsub("'", %q(\\\')) unless value[0].blank? || !value[0].is_a?(String)
             value[1] = value[1].gsub("'", %q(\\\')) unless value[1].blank? || !value[1].is_a?(String)
-
-            column_values << '(' + ["'UPDATE'", self.id, "'#{self.class.table_name}'", "'#{ChangeLog.whodidit}'","'#{field_type}'", "'#{attribute_name}'", "'#{value[0]}'","'#{value[1]}'",ChangeLogs.get_version_number(self.id,self.class.table_name)].join(',') + ')'
+            user = ChangeLog.whodidit
+            if user.blank?
+              user = 'Unkown'
+            else
+              user = ChangeLog.whodidit.is_a?(String) ? ChangeLog.whodidit : ChangeLog.whodidit.id
+            end
+            time = Time.now.strftime("%Y-%m-%d %T")
+            column_values << '(' + ["'UPDATE'", self.id, "'#{self.class.table_name}'", "'#{user}'","'#{field_type}'", "'#{attribute_name}'", "'#{value[0]}'","'#{value[1]}'",ChangeLogs.get_version_number(self.id,self.class.table_name),"'#{time}'"].join(',') + ')'
           end
         end  
-        column_names = ['action','record_id','table_name','user','field_type','attribute_name','old_value','new_value','version']
+        column_names = ['action','record_id','table_name','user','field_type','attribute_name','old_value','new_value','version','created_at']
         insert_statement = "INSERT INTO `#{ChangeLogs.table_name}` (`#{column_names.join('`, `')}`) VALUES " + column_values.join( ',' ) + ";"
-        ActiveRecord::Base.connection.execute( insert_statement )
+        ChangeLogs.connection.execute( insert_statement )
       end
 
       def record_destroy
