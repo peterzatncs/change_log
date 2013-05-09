@@ -55,7 +55,7 @@ module ChangeLog
         self.attributes.map do |key,value|
           unless self.ignore.include?(key.to_sym)
             field_type = ChangeLogs.get_field_type(self.class.table_name,key)
-            value = value.gsub("'", %q(\\\')) unless value.blank?
+            value = value.gsub("'", %q(\\\')) unless value.blank? || !value.is_a?(String)
             column_values << '(' + ["'INSERT'", self.id, "'#{self.class.table_name}'", "'#{ChangeLog.whodidit}'", "'#{field_type}'", "'#{key}'", "'#{value}'",1].join(',') + ')'
           end
         end  
@@ -79,8 +79,8 @@ module ChangeLog
           # and ignore the changes for ignored columns
           unless value[1].eql?(value[0]) || (value[1].blank?&&value[0].blank?) || self.ignore.include?(attribute_name.to_s)
             field_type = ChangeLogs.get_field_type(self.class.table_name,attribute_name)
-            value[0] = value[0].gsub("'", %q(\\\')) unless value[0].blank?
-            value[1] = value[1].gsub("'", %q(\\\')) unless value[1].blank?
+            value[0] = value[0].gsub("'", %q(\\\')) unless value[0].blank? || !value[0].is_a?(String)
+            value[1] = value[1].gsub("'", %q(\\\')) unless value[1].blank? || !value[1].is_a?(String)
 
             column_values << '(' + ["'UPDATE'", self.id, "'#{self.class.table_name}'", "'#{ChangeLog.whodidit}'","'#{field_type}'", "'#{attribute_name}'", "'#{value[0]}'","'#{value[1]}'",ChangeLogs.get_version_number(self.id,self.class.table_name)].join(',') + ')'
           end
