@@ -6,7 +6,7 @@ You can choose to skip the column which you do not want to keep change logs.
 For example: 'updated_at', 'created_at' and 'password' etc.
 
 * Note: 
-        Change Log version 1.0.4 is temporarily locked down to Rails 2.3.x and mysql database only.
+        Change Log version 1.0.5 is temporarily locked down to Rails 2.3.x and mysql database only.
         Another version with fully support to Rails 3.x and multiple databases 
         will be available soon in another branch on github.
 
