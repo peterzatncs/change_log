@@ -1,17 +1,20 @@
 class ChangeLogs < ActiveRecord::Base
   # Set table name to "change_logs" 
-  def table_name
-    :change_logs
-  end
+  self.table_name = :change_logs
 
   private
 
-  # Save Change Log details when options
-  def self.update_change_log_record_with(option={})
-    record = ChangeLogs.new(option)
-    record.field_type = get_field_type(option[:table_name],option[:attribute_name]) unless option[:action].eql?('DELETE')
-    record.created_at = Time.now
-    record.save
+  # Save Change Log details with changes 
+  def self.update_change_log_record_with(changes=[])
+    records = []
+    changes.each do |option|
+      record = ChangeLogs.new(option)
+      record.field_type = get_field_type(option[:table_name],option[:attribute_name]) unless option[:action].eql?('DELETE')
+      record.user = option[:user].id unless option[:user].is_a?(String)
+      record.created_at = Time.now
+      records << record
+    end
+    ChangeLogs.import records
   end
 
   # return the latest version number for this change

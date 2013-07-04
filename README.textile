@@ -6,17 +6,12 @@ You can choose to skip the column which you do not want to keep change logs.
 For example: 'updated_at', 'created_at' and 'password' etc.
 
 * Note: 
-        Change Log version 1.0.5 is temporarily locked down to Rails 2.3.x and mysql database only.
-        Another version with fully support to Rails 3.x and multiple databases 
-        will be available soon in another branch on github.
-
+        Use Change Log version 1.0.5 if your application is using Rails 2.x.
 
 h2. Install Change Log Gem
 
 1. by command:
 <pre><code># gem install change_log</code></pre>
-   Then in your environment.rb:
-<pre><code>config.gem 'change_log'</code></pre>
 
 
 2. or by bundler:
@@ -26,12 +21,6 @@ gem 'change_log'
 
 Then:
 <pre><code>bundle install</code></pre>
-
-* Note: 
-        If you use bundler with Rails 2.3.x, you may get "enable_change_log" method missing error. 
-        This is because Rails 2.3.x comes with its own gem handling. 
-        You need to override that and replace it with support for Bundler. 
-        Visit "Bundler Website":http://gembundler.com/rails23.html to find out how.
 
 3. Create a table to keep all changes
 
@@ -152,7 +141,7 @@ Just remember in your environment.rb file, you need to tell change_log gem
 what is your table name:
 
 <pre><code># config/environment.rb
-ChangeLogs.set_table_name('hr_maintenances')
+ChangeLogs.table_name :hr_maintenances
 </code></pre>
 
 
@@ -163,7 +152,7 @@ h2. Wish List
 h3. Author
 ----
 
-Peter Zhang at NCS New Zealand.
+Peter Zhang at NCS Software Ltd New Zealand.
 Email: peterz@ncs.co.nz
 
-Copyright (c) 2011 Peter Zhang and NCS LTD, released under the MIT license
+Copyright (c) 2013 Peter Zhang and NCS Software LTD, released under the MIT license

@@ -15,7 +15,7 @@ else
   if version
     gem 'rails', version
   else
-    gem 'actionpack', '< 3.0.0.a'
-    gem 'activerecord', '< 3.0.0.a'
+    gem 'actionpack', '> 3.0.0'
+    gem 'activerecord', '> 3.0.0'
   end
 end
