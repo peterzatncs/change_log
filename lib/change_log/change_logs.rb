@@ -1,6 +1,10 @@
+require 'activerecord-import'
+
 class ChangeLogs < ActiveRecord::Base
   # Set table name to "change_logs" 
   self.table_name = :change_logs
+
+  attr_accessible :action, :record_id, :table_name, :user, :field_type, :attribute_name, :old_value, :new_value, :version
 
   private
 
@@ -14,7 +18,7 @@ class ChangeLogs < ActiveRecord::Base
       record.created_at = Time.now
       records << record
     end
-    ChangeLogs.import records
+    ChangeLogs.import records, :validate => false
   end
 
   # return the latest version number for this change
