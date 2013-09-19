@@ -14,7 +14,7 @@ class ChangeLogs < ActiveRecord::Base
     changes.each do |option|
       record = ChangeLogs.new(option)
       record.field_type = get_field_type(option[:table_name],option[:attribute_name]) unless option[:action].eql?('DELETE')
-      record.user = option[:user].id unless option[:user].is_a?(String)
+      record.user = option[:user].id unless option[:user].blank? || option[:user].is_a?(String)
       record.created_at = Time.now
       records << record
     end
